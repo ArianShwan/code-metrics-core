@@ -1,0 +1,26 @@
+{
+  "name": "code-metrics-core",
+  "version": "1.0.0",
+  "description": "Labb 2. En modul för kod-analys.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/ArianShwan/code-metrics-core.git"
+  },
+  "keywords": [
+    "code",
+    "module",
+    "metrics",
+    "filter",
+    "javascript"
+  ],
+  "author": "Arian Shwan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ArianShwan/code-metrics-core/issues"
+  },
+  "homepage": "https://github.com/ArianShwan/code-metrics-core#readme"
+}
