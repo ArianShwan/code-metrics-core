@@ -36,5 +36,26 @@ isCommentLine(line) {
     return line.startsWith('//') || line.startsWith('/*') || line.startsWith('*')
   }
 
+  calculateComplexity(content) {
+    let complexity = 1
+
+    const decisionKeywords = ['if', 'for', 'while', 'case', 'catch', '&&', '||', '?']
+
+    complexityKeywords.forEach(keyword => {
+      let regex
+
+      if (keyword === '&&' || keyword === '||') {
+        regex = new RegExp(`\\${keyword}`, 'g')
+      } else if (keyword === '?') {
+        regex = new RegExp(`\\${keyword}`, 'g')
+      } else {
+        regex = new RegExp(`\\b${keyword}\\b`, 'g')
+      }
+
+      const matches = content.match(regex) || []
+      complexity += matches.length
+    })
+    return complexity
+  }
 }
 module.exports = CodeAnalyzer
