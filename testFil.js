@@ -126,7 +126,9 @@ async function processData(data) {
 const analyzer = new CodeAnalyzer();
 const lines = analyzer.countLines(testCode);
 const comments = analyzer.analyzeComments(testCode);
+const complexity = analyzer.calculateComplexity(testCode);
 
+console.log('\nComplexity:', complexity);
 console.log('Lines:', lines);
 console.log('Comments:', comments);
 console.log('\\nExpected results:');

@@ -4,19 +4,12 @@ class CodeAnalyzer {
     const lines = content.split('\n')
     const totalLines = lines.length
     const emptyLines = lines.filter(line => line.trim() === '').length
-    
-    const codeLines = lines.filter(line=> {
-      const trimmed = line.trim()
-
-      return trimmed !== '' && !this.isCommentLine(trimmed)
-    }).length
+    const codeLines = totalLines - emptyLines
 
     return{
       total: totalLines,
       empty: emptyLines,
-      code: codeLines,
-      comments: totalLines - emptyLines - codeLines
-    }
+      code: codeLines,    }
   }
 
   analyzeComments(content) {
@@ -37,25 +30,45 @@ isCommentLine(line) {
   }
 
   calculateComplexity(content) {
-    let complexity = 1
 
-    const decisionKeywords = ['if', 'for', 'while', 'case', 'catch', '&&', '||', '?']
+    let codeOnly = content
+    .replace(/\/\/.*$/gm, '') // Single-line comments
+    .replace(/\/\*[\s\S]*?\*\//g, '') // Multi-line comments
+    .replace(/^\s*[\r\n]/gm, '') // Empty lines
 
-    complexityKeywords.forEach(keyword => {
-      let regex
+    const complexityPatterns = {
+      'if': /\bif\b/g,
+      'for': /\bfor\b/g,
+      'while': /\bwhile\b/g,
+      'switch': /\bswitch\b/g,
+      'case': /\bcase\b/g,
+      'catch': /\bcatch\b/g,
+      'else if': /\belse if\b/g,
+      'else': /\belse\b/g,
+      '&&': /&&/g,
+      '||': /\|\|/g,
+      '?': /\?/g
+    }
 
-      if (keyword === '&&' || keyword === '||') {
-        regex = new RegExp(`\\${keyword}`, 'g')
-      } else if (keyword === '?') {
-        regex = new RegExp(`\\${keyword}`, 'g')
-      } else {
-        regex = new RegExp(`\\b${keyword}\\b`, 'g')
+    const breakdown = {}
+    let totalComplexity = 1
+
+    Object.entries(complexityPatterns).forEach(([name, pattern]) => {
+      const matches = codeOnly.match(pattern) || []
+      const count = matches.length
+
+      if (count > 0) {
+        breakdown[name] = count
+        totalComplexity += count
       }
-
-      const matches = content.match(regex) || []
-      complexity += matches.length
     })
-    return complexity
+
+    return {
+      total: totalComplexity,
+      breakdown: breakdown
+    }
   }
+
 }
+
 module.exports = CodeAnalyzer
