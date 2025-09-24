@@ -6,10 +6,11 @@ class CodeAnalyzer {
     const emptyLines = lines.filter(line => line.trim() === '').length
     const codeLines = totalLines - emptyLines
 
-    return{
+    return {
       total: totalLines,
       empty: emptyLines,
-      code: codeLines,    }
+      code: codeLines,
+    }
   }
 
   analyzeComments(content) {
@@ -23,10 +24,6 @@ class CodeAnalyzer {
       singleLine: singleLineComments.length,
       multiLine: multiLineComments.length
     }
-  }
-
-isCommentLine(line) {
-    return line.startsWith('//') || line.startsWith('/*') || line.startsWith('*')
   }
 
   calculateComplexity(content) {
@@ -53,10 +50,12 @@ isCommentLine(line) {
     const breakdown = {}
     let totalComplexity = 1
 
+    // Calculate complexity based on patterns
     Object.entries(complexityPatterns).forEach(([name, pattern]) => {
       const matches = codeOnly.match(pattern) || []
       const count = matches.length
 
+      // Only include in breakdown if count > 0
       if (count > 0) {
         breakdown[name] = count
         totalComplexity += count

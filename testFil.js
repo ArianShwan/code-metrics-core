@@ -132,7 +132,5 @@ console.log('\nComplexity:', complexity);
 console.log('Lines:', lines);
 console.log('Comments:', comments);
 console.log('\\nExpected results:');
-console.log('- Should find single-line comments (//)');
-console.log('- Should find multi-line comments (/* */)'); 
 console.log('- Should count empty lines');
 console.log('- Should separate code lines from comments');
