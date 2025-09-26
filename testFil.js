@@ -123,14 +123,30 @@ async function processData(data) {
 // Sista kommentaren i filen
 `;
 
+// I slutet av testFil.js, ersätt din nuvarande test-kod med:
+
 const analyzer = new CodeAnalyzer();
 const lines = analyzer.countLines(testCode);
 const comments = analyzer.analyzeComments(testCode);
 const complexity = analyzer.calculateComplexity(testCode);
+const functions = analyzer.analyzeFunctions(testCode);
+const codeQuality = analyzer.analyzeCodeQuality(testCode);
 
-console.log('\nComplexity:', complexity);
+console.log('\n=== COMPLETE ANALYSIS ===');
 console.log('Lines:', lines);
 console.log('Comments:', comments);
-console.log('\\nExpected results:');
-console.log('- Should count empty lines');
-console.log('- Should separate code lines from comments');
+console.log('Complexity:', complexity);
+console.log('Functions:', functions);
+console.log('Code Quality:', codeQuality);
+
+// Visa complexity breakdown snyggare
+console.log(`\nComplexity: ${complexity.total}`);
+if (Object.keys(complexity.breakdown).length > 0) {
+  const breakdownParts = Object.entries(complexity.breakdown)
+    .map(([name, count]) => `${name}: ${count}`);
+  console.log(`(${breakdownParts.join(', ')})`);
+}
+
+// Visa kvalitetssammanfattning
+console.log(`\nQuality Score: ${codeQuality.score}/100`);
+console.log(`Issues: ${codeQuality.summary.critical} critical, ${codeQuality.summary.errors} errors, ${codeQuality.summary.warnings} warnings`);

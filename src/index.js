@@ -1,16 +1,21 @@
-const CodeAnalyzer = require ('./src/analyzer')
+const CodeAnalyzer = require ('./analyzer')
+const CodeParser = require ('./parser')
 
 class CodeMetrics {
-  constructor(content) {
+  constructor() {
     this.analyzer = new CodeAnalyzer()
   }
 
-  analyzeFile(content) {
+  analyzeFile(filePath, content) {
+    const parsed = this.parser.parse(filePath, content)
+
     return {
       fileName: filePath,
       lines: this.analyzer.countLines(content),
       comments: this.analyzer.analyzeComments(content),
-      complexity: this.analyzer.calculateComplexity(content)
+      complexity: this.analyzer.calculateComplexity(content),
+      functions: this.analyzer.analyzeFunctions(content),
+      codeQuality: this.analyzer.analyzeCodeQuality(content)
     }
   }
 }
