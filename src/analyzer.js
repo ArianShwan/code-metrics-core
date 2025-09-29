@@ -10,29 +10,34 @@ class CodeAnalyzer {
       total: totalLines,
       empty: emptyLines,
       code: codeLines,
-    }
+    };
   }
 
-  analyzeComments(content) {
-    const singleLineComments = content.match(/\/\/.*/g) || []
-    const multiLineComments = content.match(/\/\*[\s\S]*?\*\//g) || []
+  analyzeComments(content, commentPatterns) {
+    if(!commentPatterns){
+      commentPatterns = {
+        singleLine: /\/\/.*/g,
+        multiLine: /\/\*[\s\S]*?\*\//g
+      };
+    }
 
-    const totalComments = singleLineComments.length + multiLineComments.length
+    const singleLineComments = content.match(commentPatterns.singleLine) || []
+    const multiLineComments = content.match(commentPatterns.multiLine) || []
 
     return {
-      total: totalComments,
+      total: singleLineComments.length + multiLineComments.length,
       singleLine: singleLineComments.length,
       multiLine: multiLineComments.length
-    }
+    };
   }
 
-  calculateComplexity(content) {
+  calculateComplexity(content, languagePatterns) {
     let codeOnly = content
       .replace(/\/\/.*$/gm, '') // Single-line comments
       .replace(/\/\*[\s\S]*?\*\//g, '') // Multi-line comments
       .replace(/^\s*[\r\n]/gm, '') // Empty lines
 
-    const complexityPatterns = {
+    const complexityPatterns = languagePatterns || {
       'if': /\bif\b/g,
       'for': /\bfor\b/g,
       'while': /\bwhile\b/g,
@@ -66,26 +71,30 @@ class CodeAnalyzer {
     }
   }
 
-  analyzeFunctions(content) {
+  analyzeFunctions(content, functionPatterns) {
+  if (!functionPatterns) {
+    functionPatterns = [
+      /^\s*([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(/gm,
+      /(?:function|async\s+function)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(/g
+    ];
+  }
+  
+  // Remove comments and strings to avoid false positives
   const codeOnly = content
     .replace(/\/\*[\s\S]*?\*\//g, '')
     .replace(/\/\/.*/g, '');
-
-  // Patterns to match function declarations and expressions
-  const patterns = [
-    /^\s*([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(/gm,           // Class methods: methodName(
-    /(?:function|async\s+function)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(/g  // function name(
-  ];
-
+  
   const functionNames = [];
   
-  patterns.forEach(pattern => {
+  functionPatterns.forEach((pattern) => {
     let match;
     while ((match = pattern.exec(codeOnly)) !== null) {
-      const functionName = match[1];
-      const keywords = ['if', 'while', 'for', 'switch', 'catch', 'return'];
-      if (!keywords.includes(functionName)) {
-        functionNames.push(functionName);
+      if (match[1]) {  // Control to ensure there's a captured group
+        const functionName = match[1];
+        const keywords = ['if', 'while', 'for', 'switch', 'catch', 'return', 'filter', 'match'];
+        if (!keywords.includes(functionName)) {
+          functionNames.push(functionName);
+        }
       }
     }
   });
@@ -96,7 +105,7 @@ class CodeAnalyzer {
   };
 }
 
-  analyzeCodeQuality(content) {
+  analyzeCodeQuality(content, functionPatterns) {
     const errors = [];
     const warnings = [];
     const critical = [];
@@ -123,7 +132,7 @@ class CodeAnalyzer {
     this.checkLongLines(content, warnings);
     this.checkDeepNesting(codeOnly, warnings);
     this.checkCommentRatio(content, warnings);
-    this.checkFunctionLength(content, warnings);
+    this.checkFunctionLength(content, functionPatterns, warnings);
 
     return {
       summary: {
@@ -146,10 +155,11 @@ class CodeAnalyzer {
     const brackets = { '(': 0, '[': 0, '{': 0 };
     const closers = { ')': '(', ']': '[', '}': '{' };
 
+    // Track opening and closing brackets
     for (let char of code) {
-      if (brackets.hasOwnProperty(char)) {
+      if (Object.prototype.hasOwnProperty.call(brackets, char)) {
         brackets[char]++;
-      } else if (closers.hasOwnProperty(char)) {
+      } else if (Object.prototype.hasOwnProperty.call(closers, char)) {
         const opener = closers[char];
         brackets[opener]--;
         if (brackets[opener] < 0) {
@@ -171,7 +181,7 @@ class CodeAnalyzer {
     const lines = code.split('\n');
     let missingSemicolons = 0;
     
-    lines.forEach((line, index) => {
+    lines.forEach((line) => {
       const trimmed = line.trim();
       if (trimmed &&
           !trimmed.endsWith(';') &&
@@ -272,11 +282,9 @@ class CodeAnalyzer {
     }
   }
 
-  checkFunctionLength(content, issues) {
-    const functions = this.analyzeFunctions(content);
-    
-    // Simple heuristic: if we have many functions and high line count, functions might be too long
-    const lines = this.countLines(content);
+  checkFunctionLength(content, functionPatterns, issues) {
+    const functions = this.analyzeFunctions(content, functionPatterns); // Use the provided function patterns
+    const lines = this.countLines(content);  // Simple heuristic: if we have many functions and high line count, functions might be too long
     if (functions.count > 0 && (lines.code / functions.count) > 50) {
       issues.push('Functions may be too long - consider breaking them down');
     }

@@ -4,7 +4,8 @@
   "description": "Labb 2. En modul för kod-analys.",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint src/**/*.js"
   },
   "repository": {
     "type": "git",
@@ -22,5 +23,10 @@
   "bugs": {
     "url": "https://github.com/ArianShwan/code-metrics-core/issues"
   },
-  "homepage": "https://github.com/ArianShwan/code-metrics-core#readme"
+  "homepage": "https://github.com/ArianShwan/code-metrics-core#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.36.0",
+    "eslint": "^9.36.0",
+    "globals": "^16.4.0"
+  }
 }
