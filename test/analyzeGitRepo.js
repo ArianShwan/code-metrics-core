@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 /* ================= CHANGE REPO URL TO TEST ( USE HTTPS ) ================= */
-const repoUrl = 'https://github.com/Cappe99/L2-Module.git';
+const repoUrl = 'https://github.com/ArianShwan/code-metrics-core.git';
 /* ================= CHANGE REPO URL TO TEST ( USE HTTPS ) ================= */
 
 const results = analyzeGitRepository(repoUrl);
