@@ -52,7 +52,7 @@ class CodeAnalyzer {
     }
 
     const breakdown = {}
-    let totalComplexity = 1
+    let totalComplexity = 0
 
     // Calculate complexity based on patterns
     Object.entries(complexityPatterns).forEach(([name, pattern]) => {
