@@ -1,10 +1,11 @@
 {
   "name": "code-metrics-core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Labb 2. En modul för kod-analys.",
   "main": "src/index.js",
   "scripts": {
-    "test": "node test/analyzeGitRepo.js",
+    "test": "node examples/testRepositoryAnalyzer.js",
+    "test:old": "node examples/analyzeGitRepo.js",
     "lint": "eslint src/**/*.js"
   },
   "repository": {

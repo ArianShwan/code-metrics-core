@@ -1,5 +1,6 @@
-const CodeAnalyzer = require ('./analyzer')
-const CodeParser = require ('./parser')
+const CodeAnalyzer = require('./analyzer')
+const CodeParser = require('./parser')
+const RepositoryAnalyzer = require('./RepositoryAnalyzer')
 
 class CodeMetrics {
   constructor() {
@@ -22,4 +23,6 @@ class CodeMetrics {
   }
 }
 
+// Export both classes
 module.exports = CodeMetrics
+module.exports.RepositoryAnalyzer = RepositoryAnalyzer
