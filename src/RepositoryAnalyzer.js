@@ -1,6 +1,6 @@
 const { execSync } = require('child_process')
-const CodeAnalyzer = require('./analyzer')  // ← Ändra denna rad
-const CodeParser = require('./parser')       // ← Lägg till denna rad
+const CodeAnalyzer = require('./analyzer')
+const CodeParser = require('./parser')
 const fs = require('fs')
 const path = require('path')
 
